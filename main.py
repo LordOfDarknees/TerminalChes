@@ -37,13 +37,24 @@ class Chess:
 
     def display_field(self):
         # Find a way to display a field
-        result_text = "    " # tbh the spaces are since im to lazy to think of a way to align it
+        result_text = "     " # tbh the spaces are since im to lazy to think of a way to align it
 
-        # Add header of the board
+        # create the Characters side of the board
+        character_decorator_side = ""
         for character in ascii_uppercase[0:self.rows]:
-            result_text += character + " "
-        # at the end adding a break
-        result_text += "\n"
+            character_decorator_side += character + " "
+
+        character_decorator_side += "\n" # at the end adding a break
+        # ------------------------------------------------
+        # failed since the underscore characters are not the same size as other characters vvvv
+        # decorator_underscore = ""
+        # for i in character_decorator_side:
+        #     decorator_underscore += "-"
+        # decorator_underscore += "\n"
+        # ^^^^^^^^
+
+        result_text += character_decorator_side # Add header of the board
+        # result_text += decorator_underscore
 
         for column_number,column in enumerate(self.field):
             column_text = f"{str(column_number + 1)} | "
@@ -54,7 +65,10 @@ class Chess:
                 row_merged_text += row + " "
 
             # Merging all the text so print will only be used once.
-            result_text += column_text + row_merged_text + "\n"
+            # ColumnNR rows ColumnNR example: ---> 1 | 0 1 2 3 4 5 6 7 | 1 <---
+            result_text += f"{str(column_number + 1)} |  {row_merged_text} | {str(column_number + 1)}\n"
+
+
 
         print(result_text)
 
@@ -66,7 +80,7 @@ class Chess:
     # -----------------------------------------------------------------------------
 
     def switch_player(self):
-
+        pass
 
     # -----------------------------------------------------------------------------
 
