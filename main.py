@@ -1,4 +1,4 @@
-from getpass import fallback_getpass
+from math import trunc
 from time import sleep
 from string import  ascii_uppercase
 
@@ -10,13 +10,19 @@ class Chess:
         self._columns = column_count
 
         self._emptyFieldCharacter = " "
-        self._allUsedLetters = ascii_uppercase[0:self._rows]
+        self._allUsedLetters:list[str] = list(ascii_uppercase[0:self._rows])
+        print(self._allUsedLetters)
         # self.field = [" "]*self.rows*self.columns
-        self.field = self.generate_field()
+        self.field = self.generate_field(row_count, column_count)
         self._Players = ["White", "Black"]
         self.currentPlayer = self._Players[0]
         
-        self._sleepTime = 0.15 # Used to the while loop aint running to fast
+        self._sleepTime = 0.15 # Used to the while loop ain't running to fast
+
+    def start_game(self):
+        while True:
+            self.display_field()
+            self.set_piece()
 
     # -----------------------------------------------------------------------------
 
@@ -79,40 +85,45 @@ class Chess:
 
     # TODO finish the get_player_choice method to filter the input and return use full info
     def get_player_choice(self):
-        _user_choice = {
+        _blank_dict = {
             "row1": None,
             "column1": None
         }
+        user_choice = _blank_dict
 
         while True:
+            print("LoopStarted\n")
             sleep(self._sleepTime)
             _unfiltered_input = input()
             # Skip directly if there are less than 2 characters
-            if len(_unfiltered_input) < 2:
+            if len(_unfiltered_input) < 1:
+
+                print("TriggeredSkip")
                 continue
 
             for character in _unfiltered_input:
                 # Check for the Character part of the position
-                if _user_choice["row1"] is None and character in self._allUsedLetters:
+                if user_choice["row1"] is None and character.upper() in self._allUsedLetters:
                     # Saving the position to use it as a row identifier
-                    _user_choice["row1"] = self._allUsedLetters.index(character) 
+                    user_choice["row1"] = self._allUsedLetters.index(character.upper())
                     
-                elif _user_choice["row1"] is None and not character.isdigit() and character != " ":
+                elif user_choice["row1"] is None and not character.isdigit() and character != " ":
                     # Character is not a letter that is used in the game ;>
                     pass
                 
                 # Check for the Digit part of the position
-                if _user_choice["column1"] is None and character.isdigit() and len(self.field) >= int(character) and not int(character)<= 0:
-                    _user_choice["column1"] = int(character) - 1 # subtracting 1 to make it useable in a list
+                if user_choice["column1"] is None and character.isdigit() and len(self.field) >= int(character) and not int(character)<= 0:
+                    user_choice["column1"] = int(character) - 1 # subtracting 1 to make it usable in a list
 
 
             # check if all has been filled out
-            _found_none = False
-            if not None in list(_user_choice.values()):
-              break
+            print(list(user_choice.values()))
+            if not None in list(user_choice.values()): # Check if any
+                break
+            else:
+                user_choice = _blank_dict  # Resetting it since it wasn't filled out properly
 
-
-
+        return user_choice
                     
 
 
@@ -126,11 +137,14 @@ class Chess:
     # -----------------------------------------------------------------------------
 
     def set_piece(self):
-        pass
+        choice_dict = self.get_player_choice()
+
+        self.field[choice_dict["column1"]][choice_dict["row1"]] = "x"
 
     # -----------------------------------------------------------------------------
 
 
+
 if __name__ == "__main__":
     chess = Chess()
-    chess.display_field()
+    chess.start_game()
