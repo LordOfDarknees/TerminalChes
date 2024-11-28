@@ -1,31 +1,37 @@
+from getpass import fallback_getpass
+from time import sleep
 from string import  ascii_uppercase
 
 class Chess:
-    def __init__(self) -> None:
+    def __init__(self, row_count: int=8, column_count:int = 8) -> None:
         
         # Maybe some day a bigger chessboard :)
-        self.rows = 8
-        self.columns = 8
+        self._rows = row_count
+        self._columns = column_count
 
-        self.__emptyFieldCharacter = " "
+        self._emptyFieldCharacter = " "
+        self._allUsedLetters = ascii_uppercase[0:self._rows]
         # self.field = [" "]*self.rows*self.columns
         self.field = self.generate_field()
-        self.Players = ["White", "Black"]
-        self.currentPlayer = self.Players[0]
+        self._Players = ["White", "Black"]
+        self.currentPlayer = self._Players[0]
+        
+        self._sleepTime = 0.15 # Used to the while loop aint running to fast
 
     # -----------------------------------------------------------------------------
 
-    def generate_field(self) -> list[list]:
+    @staticmethod
+    def generate_field(rows, columns) -> list[list]:
         """
         Generates a Field by the set number of  column's and row's
         :return: list[list] For each column it generates the number of rows. Just look at the code yourself darn it
         """
         field = []
-        for i in range(self.columns):
+        for i in range(columns):
             column_list = []
 
             # Column for loop
-            for x in range(self.rows):
+            for x in range(rows):
                 # column_list.append(self.__emptyFieldCharacter)
                 column_list.append(str(x)) # For testing use. displays count in each cell
             # After the column for loop
@@ -41,7 +47,7 @@ class Chess:
 
         # create the Characters side of the board
         character_decorator_side = ""
-        for character in ascii_uppercase[0:self.rows]:
+        for character in ascii_uppercase[0:self._rows]:
             character_decorator_side += character + " "
 
         character_decorator_side += "\n" # at the end adding a break
@@ -57,7 +63,6 @@ class Chess:
         # result_text += decorator_underscore
 
         for column_number,column in enumerate(self.field):
-            column_text = f"{str(column_number + 1)} | "
             row_merged_text = ""
 
             # Get all the values of the column together to print it.
@@ -68,24 +73,63 @@ class Chess:
             # ColumnNR rows ColumnNR example: ---> 1 | 0 1 2 3 4 5 6 7 | 1 <---
             result_text += f"{str(column_number + 1)} |  {row_merged_text} | {str(column_number + 1)}\n"
 
-
-
         print(result_text)
 
     # -----------------------------------------------------------------------------
 
+    # TODO finish the get_player_choice method to filter the input and return use full info
     def get_player_choice(self):
-        user_choice = ""
-        while user_choice == "":
-            unfiltered_input = input()
-            
+        _user_choice = {
+            "row1": None,
+            "column1": None
+        }
+
+        while True:
+            sleep(self._sleepTime)
+            _unfiltered_input = input()
+            # Skip directly if there are less than 2 characters
+            if len(_unfiltered_input) < 2:
+                continue
+
+            for character in _unfiltered_input:
+                # Check for the Character part of the position
+                if _user_choice["row1"] is None and character in self._allUsedLetters:
+                    # Saving the position to use it as a row identifier
+                    _user_choice["row1"] = self._allUsedLetters.index(character) 
+                    
+                elif _user_choice["row1"] is None and not character.isdigit() and character != " ":
+                    # Character is not a letter that is used in the game ;>
+                    pass
+                
+                # Check for the Digit part of the position
+                if _user_choice["column1"] is None and character.isdigit() and len(self.field) >= int(character) and not int(character)<= 0:
+                    _user_choice["column1"] = int(character) - 1 # subtracting 1 to make it useable in a list
+
+
+            # check if all has been filled out
+            _found_none = False
+            if not None in list(_user_choice.values()):
+              break
+
+
+
+                    
+
+
 
     # -----------------------------------------------------------------------------
 
+    # TODO write how to switch between player 1 and 2
     def switch_player(self):
         pass
 
     # -----------------------------------------------------------------------------
+
+    def set_piece(self):
+        pass
+
+    # -----------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     chess = Chess()
