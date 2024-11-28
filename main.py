@@ -1,4 +1,3 @@
-from math import trunc
 from time import sleep
 from string import  ascii_uppercase
 
@@ -13,7 +12,9 @@ class Chess:
         self._allUsedLetters:list[str] = list(ascii_uppercase[0:self._rows])
         print(self._allUsedLetters)
         # self.field = [" "]*self.rows*self.columns
-        self.field = self.generate_field(row_count, column_count)
+        self.dataField = self.generate_field(row_count, column_count)
+        self.displayField = self.dataField
+
         self._Players = ["White", "Black"]
         self.currentPlayer = self._Players[0]
         
@@ -68,7 +69,7 @@ class Chess:
         result_text += character_decorator_side # Add header of the board
         # result_text += decorator_underscore
 
-        for column_number,column in enumerate(self.field):
+        for column_number,column in enumerate(self.dataField):
             row_merged_text = ""
 
             # Get all the values of the column together to print it.
@@ -139,7 +140,7 @@ class Chess:
     def set_piece(self):
         choice_dict = self.get_player_choice()
 
-        self.field[choice_dict["column1"]][choice_dict["row1"]] = "x"
+        self.dataField[choice_dict["column1"]][choice_dict["row1"]] = "x"
 
     # -----------------------------------------------------------------------------
 
